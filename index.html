@@ -514,15 +514,16 @@ fillMonths("targetMonth");
 ["targetMonth","targetYear"].forEach(id=>$(id).addEventListener("change",()=>fillDays("targetMonth","targetDay","targetYear")));
 
 const today=new Date();
+
 $("birthMonth").value=7;
-$("birthYear").value=1987;
+$("birthYear").value=2026;
 fillDays("birthMonth","birthDay","birthYear");
 $("birthDay").value=17;
 
-$("targetMonth").value=today.getMonth()+1;
-$("targetYear").value=today.getFullYear();
+$("targetMonth").value=7;
+$("targetYear").value=2026;
 fillDays("targetMonth","targetDay","targetYear");
-$("targetDay").value=today.getDate();
+$("targetDay").value=17;
 
 $("calculateBtn").addEventListener("click",calculateAge);
 $("todayBtn").addEventListener("click",setToday);
