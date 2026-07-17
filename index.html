@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free online age calculator to calculate exact age in years, months, weeks, days, hours, minutes and seconds." />
+  <title>ChronoAge - Online Age Calculator</title>
+  <style>
+    :root {
+      --navy: #0b355d;
+      --navy-2: #123f6b;
+      --green: #4d8127;
+      --blue: #0d6efd;
+      --light: #f4f6f9;
+      --card: #ffffff;
+      --text: #17202a;
+      --muted: #68737d;
+      --border: #d8dee6;
+      --yellow: #fff200;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--light);
+      color: var(--text);
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      padding: 14px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+
+    .wrap {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: .3px;
+    }
+
+    .brand span {
+      color: #b9f65a;
+    }
+
+    .brand small {
+      opacity: .8;
+    }
+
+    main {
+      padding: 28px 0 50px;
+    }
+
+    .page-title {
+      font-size: 34px;
+      margin: 0 0 18px;
+      color: var(--navy);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(18, 63, 107, .08);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      background: var(--green);
+      color: #fff;
+      padding: 13px 18px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .panel-body {
+      padding: 22px;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 16px 18px;
+      align-items: center;
+    }
+
+    .input-grid label {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .date-fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(90px, 1fr));
+      gap: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #bfc7d1;
+      border-radius: 7px;
+      font-size: 16px;
+      background: #fff;
+      outline: none;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(13,110,253,.14);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary { background: var(--blue); color: white; }
+    .btn-secondary { background: #e9edf2; color: var(--navy); }
+    .btn-copy { background: var(--green); color: white; }
+
+    .hero-result {
+      background: linear-gradient(135deg, var(--navy), var(--navy-2));
+      color: #fff;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .hero-result h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .exact-age {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .date-line {
+      margin-top: 8px;
+      opacity: .84;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--blue);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat strong {
+      font-size: 24px;
+      color: var(--navy);
+      word-break: break-word;
+    }
+
+    .calendars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .calendar-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .calendar-card h3 {
+      margin: 0;
+      padding: 12px;
+      text-align: center;
+      background: #eef3f8;
+      color: var(--navy);
+    }
+
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .calendar th {
+      background: #2f6fa8;
+      color: white;
+      padding: 8px 2px;
+    }
+
+    .calendar td {
+      border: 1px solid #e1e5ea;
+      height: 40px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .calendar td.empty {
+      background: #f7f8fa;
+    }
+
+    .calendar td.selected {
+      background: var(--yellow);
+      font-weight: 800;
+      color: #000;
+    }
+
+    .hidden { display: none; }
+
+    .error {
+      color: #b42318;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 20px 0 35px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .brand {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .calendars {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .date-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .page-title {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap brand">
+      <h1>Chrono<span>Age</span></h1>
+      <small>Online Age Calculator</small>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h2 class="page-title">Age Calculator</h2>
+
+    <section class="panel">
+      <div class="panel-title">Enter Dates</div>
+      <div class="panel-body">
+        <div class="input-grid">
+          <label>Date of Birth</label>
+          <div class="date-fields">
+            <select id="birthMonth" aria-label="Birth month"></select>
+            <select id="birthDay" aria-label="Birth day"></select>
+            <input id="birthYear" type="number" min="1" max="9999" placeholder="Year" />
+          </div>
+
+          <label>Age at Date</label>
+          <div class="date-fields">
+            <select id="targetMonth" aria-label="Target month"></select>
+            <select id="targetDay" aria-label="Target day"></select>
+            <input id="targetYear" type="number" min="1" max="9999" placeholder="Year" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="calculateBtn">Calculate Age</button>
+          <button class="btn-secondary" id="todayBtn">Use Today</button>
+          <button class="btn-secondary" id="resetBtn">Reset</button>
+          <button class="btn-copy" id="copyBtn">Copy Result</button>
+        </div>
+
+        <div id="errorBox" class="error hidden"></div>
+      </div>
+    </section>
+
+    <section id="resultSection" class="panel hidden">
+      <div class="panel-title">Result</div>
+      <div class="panel-body">
+        <div class="hero-result">
+          <h2>Exact Age</h2>
+          <div id="exactAge" class="exact-age"></div>
+          <div id="dateLine" class="date-line"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Total Months</span><strong id="monthsStat">0</strong></div>
+          <div class="stat"><span>Total Weeks</span><strong id="weeksStat">0</strong></div>
+          <div class="stat"><span>Total Days</span><strong id="daysStat">0</strong></div>
+          <div class="stat"><span>Total Hours</span><strong id="hoursStat">0</strong></div>
+          <div class="stat"><span>Total Minutes</span><strong id="minutesStat">0</strong></div>
+          <div class="stat"><span>Total Seconds</span><strong id="secondsStat">0</strong></div>
+        </div>
+
+        <div class="calendars">
+          <div class="calendar-card">
+            <h3 id="birthCalendarTitle"></h3>
+            <div id="birthCalendar"></div>
+          </div>
+          <div class="calendar-card">
+            <h3 id="targetCalendarTitle"></h3>
+            <div id="targetCalendar"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    ChronoAge Calculator • Works entirely in your browser
+  </footer>
+
+  <script>
+    const monthNames = [
+      "January","February","March","April","May","June",
+      "July","August","September","October","November","December"
+    ];
+
+    const shortMonths = [
+      "Jan","Feb","Mar","Apr","May","Jun",
+      "Jul","Aug","Sep","Oct","Nov","Dec"
+    ];
+
+    const ids = [
+      "birthMonth","birthDay","birthYear",
+      "targetMonth","targetDay","targetYear"
+    ];
+
+    const $ = id => document.getElementById(id);
+    let lastResult = "";
+
+    function populateMonths(selectId) {
+      const select = $(selectId);
+      select.innerHTML = monthNames
+        .map((name, index) => `<option value="${index + 1}">${shortMonths[index]}</option>`)
+        .join("");
+    }
+
+    function daysInMonth(year, month) {
+      return new Date(year, month, 0).getDate();
+    }
+
+    function populateDays(monthId, dayId, yearId) {
+      const month = Number($(monthId).value);
+      const year = Number($(yearId).value) || new Date().getFullYear();
+      const oldDay = Number($(dayId).value) || 1;
+      const max = daysInMonth(year, month);
+
+      $(dayId).innerHTML = Array.from({length: max}, (_, i) =>
+        `<option value="${i + 1}">${i + 1}</option>`
+      ).join("");
+
+      $(dayId).value = Math.min(oldDay, max);
+    }
+
+    function makeDate(monthId, dayId, yearId) {
+      const month = Number($(monthId).value);
+      const day = Number($(dayId).value);
+      const year = Number($(yearId).value);
+
+      if (!year || year < 1 || year > 9999) {
+        throw new Error("Please enter a valid year between 1 and 9999.");
+      }
+
+      const dt = new Date(year, month - 1, day);
+
+      if (
+        dt.getFullYear() !== year ||
+        dt.getMonth() !== month - 1 ||
+        dt.getDate() !== day
+      ) {
+        throw new Error("Please enter a valid date.");
+      }
+
+      dt.setHours(0, 0, 0, 0);
+      return dt;
+    }
+
+    function addMonths(dateValue, months) {
+      const originalDay = dateValue.getDate();
+      const result = new Date(dateValue.getFullYear(), dateValue.getMonth() + months, 1);
+      const maxDay = daysInMonth(result.getFullYear(), result.getMonth() + 1);
+      result.setDate(Math.min(originalDay, maxDay));
+      return result;
+    }
+
+    function exactDifference(start, end) {
+      let years = end.getFullYear() - start.getFullYear();
+      let afterYears = addMonths(start, years * 12);
+
+      if (afterYears > end) {
+        years--;
+        afterYears = addMonths(start, years * 12);
+      }
+
+      let months = 0;
+      while (addMonths(afterYears, months + 1) <= end) {
+        months++;
+      }
+
+      const afterMonths = addMonths(afterYears, months);
+      const days = Math.floor((end - afterMonths) / 86400000);
+
+      return { years, months, days };
+    }
+
+    function completedMonths(start, end) {
+      let months =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth());
+
+      if (addMonths(start, months) > end) months--;
+
+      const remainderDate = addMonths(start, months);
+      const remainingDays = Math.floor((end - remainderDate) / 86400000);
+
+      return { months, remainingDays };
+    }
+
+    function formatDate(dt) {
+      return `${dt.getDate()} ${monthNames[dt.getMonth()]} ${dt.getFullYear()}`;
+    }
+
+    function renderCalendar(containerId, titleId, selectedDate) {
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth();
+      const selectedDay = selectedDate.getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      $(titleId).textContent = `${monthNames[month]} ${year}`;
+
+      const cells = [];
+      for (let i = 0; i < firstDay; i++) cells.push('<td class="empty"></td>');
+
+      for (let day = 1; day <= totalDays; day++) {
+        cells.push(`<td class="${day === selectedDay ? "selected" : ""}">${day}</td>`);
+      }
+
+      while (cells.length % 7 !== 0) cells.push('<td class="empty"></td>');
+
+      let rows = "";
+      for (let i = 0; i < cells.length; i += 7) {
+        rows += `<tr>${cells.slice(i, i + 7).join("")}</tr>`;
+      }
+
+      $(containerId).innerHTML = `
+        <table class="calendar">
+          <thead>
+            <tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function calculateAge() {
+      try {
+        $("errorBox").classList.add("hidden");
+
+        const birth = makeDate("birthMonth", "birthDay", "birthYear");
+        const target = makeDate("targetMonth", "targetDay", "targetYear");
+
+        if (target < birth) {
+          throw new Error("The target date cannot be earlier than the date of birth.");
+        }
+
+        const exact = exactDifference(birth, target);
+        const monthInfo = completedMonths(birth, target);
+        const totalDays = Math.floor((target - birth) / 86400000);
+        const totalWeeks = Math.floor(totalDays / 7);
+        const weekRemainder = totalDays % 7;
+        const totalHours = totalDays * 24;
+        const totalMinutes = totalHours * 60;
+        const totalSeconds = totalMinutes * 60;
+
+        $("exactAge").textContent =
+          `${exact.years} years, ${exact.months} months, ${exact.days} days`;
+
+        $("dateLine").textContent =
+          `From ${formatDate(birth)} to ${formatDate(target)}`;
+
+        $("monthsStat").textContent =
+          `${monthInfo.months.toLocaleString()} + ${monthInfo.remainingDays} days`;
+
+        $("weeksStat").textContent =
+          `${totalWeeks.toLocaleString()} + ${weekRemainder} days`;
+
+        $("daysStat").textContent = totalDays.toLocaleString();
+        $("hoursStat").textContent = totalHours.toLocaleString();
+        $("minutesStat").textContent = totalMinutes.toLocaleString();
+        $("secondsStat").textContent = totalSeconds.toLocaleString();
+
+        renderCalendar("birthCalendar", "birthCalendarTitle", birth);
+        renderCalendar("targetCalendar", "targetCalendarTitle", target);
+
+        $("resultSection").classList.remove("hidden");
+
+        lastResult =
+`Age Calculation Result
+
+Date of Birth: ${formatDate(birth)}
+Target Date: ${formatDate(target)}
+
+Exact Age: ${exact.years} years, ${exact.months} months, ${exact.days} days
+Total Months: ${monthInfo.months.toLocaleString()} months and ${monthInfo.remainingDays} days
+Total Weeks: ${totalWeeks.toLocaleString()} weeks and ${weekRemainder} days
+Total Days: ${totalDays.toLocaleString()}
+Total Hours: ${totalHours.toLocaleString()}
+Total Minutes: ${totalMinutes.toLocaleString()}
+Total Seconds: ${totalSeconds.toLocaleString()}`;
+
+        $("resultSection").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        $("errorBox").textContent = error.message;
+        $("errorBox").classList.remove("hidden");
+      }
+    }
+
+    function setToday() {
+      const now = new Date();
+      $("targetMonth").value = now.getMonth() + 1;
+      $("targetYear").value = now.getFullYear();
+      populateDays("targetMonth", "targetDay", "targetYear");
+      $("targetDay").value = now.getDate();
+    }
+
+    function resetForm() {
+      const now = new Date();
+
+      $("birthMonth").value = 7;
+      $("birthYear").value = 1987;
+      populateDays("birthMonth", "birthDay", "birthYear");
+      $("birthDay").value = 17;
+
+      $("targetMonth").value = now.getMonth() + 1;
+      $("targetYear").value = now.getFullYear();
+      populateDays("targetMonth", "targetDay", "targetYear");
+      $("targetDay").value = now.getDate();
+
+      $("resultSection").classList.add("hidden");
+      $("errorBox").classList.add("hidden");
+      lastResult = "";
+    }
+
+    async function copyResult() {
+      if (!lastResult) {
+        $("errorBox").textContent = "Please calculate the age first.";
+        $("errorBox").classList.remove("hidden");
+        return;
+      }
+
+      await navigator.clipboard.writeText(lastResult);
+      alert("Result copied to clipboard.");
+    }
+
+    populateMonths("birthMonth");
+    populateMonths("targetMonth");
+
+    ["birthMonth", "birthYear"].forEach(id => {
+      $(id).addEventListener("change", () =>
+        populateDays("birthMonth", "birthDay", "birthYear")
+      );
+    });
+
+    ["targetMonth", "targetYear"].forEach(id => {
+      $(id).addEventListener("change", () =>
+        populateDays("targetMonth", "targetDay", "targetYear")
+      );
+    });
+
+    $("calculateBtn").addEventListener("click", calculateAge);
+    $("todayBtn").addEventListener("click", setToday);
+    $("resetBtn").addEventListener("click", resetForm);
+    $("copyBtn").addEventListener("click", copyResult);
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Enter") calculateAge();
+    });
+
+    resetForm();
+  </script>
+</body>
+</html>
